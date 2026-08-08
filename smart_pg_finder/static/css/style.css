@@ -1,0 +1,328 @@
+/* Universal Multi-Theme Design System - Fixed (0 Errors) */
+:root {
+    /* Dark Theme (Default) */
+    --primary-color: #00d2ff;
+    --secondary-color: #3a7bd5;
+    --navbar-bg: rgba(11, 17, 33, 0.85);
+    --dark-bg: #0b1121;
+    --card-bg: rgba(30, 41, 59, 0.4);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent-color: #22d3ee;
+    --glass-blur: 16px;
+    --shadow-2xl: 0 40px 80px -20px rgba(0, 0, 0, 0.8);
+    --navbar-text: #fff;
+}
+
+/* Light Theme Variables */
+[data-theme="light"] {
+    --primary-color: #2563eb;
+    --secondary-color: #3b82f6;
+    --navbar-bg: rgba(255, 255, 255, 0.9);
+    --dark-bg: #f8fafc;
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --border-color: rgba(0, 0, 0, 0.08);
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --accent-color: #3b82f6;
+    --glass-blur: 12px;
+    --shadow-2xl: 0 40px 80px -20px rgba(0, 0, 0, 0.15);
+    --navbar-text: #1e293b;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    font-family: 'Outfit', 'Poppins', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* 3D Glassmorphism Card */
+.glass-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    transition: transform 0.4s cubic-bezier(0.2, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease, background 0.4s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.glass-card:hover {
+    transform: scale(1.02) rotateY(2deg);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
+    border-color: var(--primary-color);
+}
+
+.search-result-card, .card {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.search-result-card:hover, .card:hover {
+    transform: scale(1.05) rotateY(5deg);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* Navbar Enhancements */
+.navbar {
+    background: var(--navbar-bg) !important;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1050;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.2);
+}
+
+.navbar .nav-link {
+    color: var(--navbar-text) !important;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.navbar .nav-link:hover {
+    color: var(--primary-color) !important;
+    transform: translateY(-2px);
+}
+
+.navbar-brand {
+    font-weight: 800;
+    text-transform: uppercase;
+    font-style: italic;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 1.2rem;
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.1);
+    background: var(--primary-color);
+    color: #fff;
+    border-color: transparent;
+}
+
+/* Auth Cards */
+.auth-card {
+    max-width: 450px;
+    margin: auto;
+}
+
+/* Stats Cards */
+.stat-card {
+    padding: 2.5rem;
+    text-align: center;
+    border-radius: 24px;
+    background: radial-gradient(circle at top left, rgba(34, 211, 238, 0.1), transparent);
+}
+
+.stat-value {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #fff, #94a3b8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Buttons */
+.btn-primary-custom {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    color: #fff !important;
+    font-weight: 600;
+    padding: 0.8rem 1.8rem;
+    border-radius: 50px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 20px -5px rgba(0, 210, 255, 0.3);
+}
+
+.btn-primary-custom:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 20px 30px -5px rgba(0, 210, 255, 0.4);
+    filter: brightness(1.2);
+    color: #fff !important;
+}
+
+.btn-outline-custom {
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 50px;
+    transition: 0.3s;
+}
+
+.btn-outline-custom:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: rgba(0, 210, 255, 0.05);
+}
+
+/* Dropdown Visibility */
+.dropdown-menu {
+    background: rgba(15, 23, 42, 0.96) !important;
+    border: 1px solid var(--border-color) !important;
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+.dropdown-item {
+    color: var(--text-primary) !important;
+    font-weight: 500;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    color: var(--text-primary) !important;
+    background: rgba(59, 130, 246, 0.14) !important;
+}
+
+.dropdown-divider {
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="light"] .dropdown-menu {
+    background: rgba(255, 255, 255, 0.96) !important;
+}
+
+/* Grid Layouts */
+.pg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2.5rem;
+}
+
+/* Facility Badges */
+.facility-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Password Toggle */
+.pass-toggle {
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: 0.2s;
+}
+
+.pass-toggle:hover {
+    color: var(--primary-color);
+}
+
+/* Form Controls - FIXED TEXT VISIBILITY */
+.form-control-custom, .form-select, .form-control, .form-select-custom {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: 12px !important;
+    padding: 0.8rem 1.2rem !important;
+}
+
+[data-theme="light"] .form-control-custom, 
+[data-theme="light"] .form-select, 
+[data-theme="light"] .form-control, 
+[data-theme="light"] .form-select-custom {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    color: var(--text-primary) !important;
+}
+
+.form-control-custom:focus, .form-select:focus, .form-control:focus, .form-select-custom:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.25rem rgba(0, 210, 255, 0.1) !important;
+    color: var(--text-primary) !important;
+}
+
+.form-control-custom::placeholder, .form-select-custom option, .availability-select option {
+    color: var(--text-secondary) !important;
+    opacity: 1 !important;
+    background: var(--card-bg) !important;
+}
+
+.form-select-custom option, .availability-select option {
+    background: var(--dark-bg) !important;
+    color: var(--text-primary) !important;
+    padding: 8px 12px !important;
+}
+
+.availability-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(0, 210, 255, 0.25) !important;
+    border-color: var(--primary-color) !important;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.search-result-card, .fadeIn-card {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+}
+
+/* Button Fix - Ensure working */
+.btn {
+    position: relative;
+    z-index: 1;
+}
+
+button[type="submit"], .btn[type="submit"] {
+    pointer-events: auto !important;
+}
+
+.btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}

@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ pg.name }} | PG Details{% endblock %}
+
+{% block content %}
+<div class="row fade-in-up">
+    <!-- Clean PG Detail Hero -->
+    <div class="col-lg-8 mb-5">
+        <div class="glass-card p-5 shadow-lg border-radius-15">
+            <h1 class="display-5 fw-bold mb-4">{{ pg.name }}</h1>
+            <p class="fs-4 text-secondary mb-3"><i class="fa-solid fa-location-dot me-2 text-primary"></i>{{ pg.location }}</p>
+            <div class="h2 fw-bold text-primary mb-4 mb-lg-3">₹{{ pg.price }} / month</div>
+            <span class="badge {% if pg.is_available %}bg-success{% else %}bg-danger{% endif %} fs-4 px-5 py-4">
+                <i class="fa-solid fa-bed me-2"></i>{% if pg.is_available %}Available{% else %}Full{% endif %}
+            </span>
+            {% if avg_rating > 0 %}
+            <div class="mt-4 pt-4 border-top border-secondary border-opacity-10">
+                <div class="text-warning fs-4">
+                    {% for i in "12345"|make_list %}{% if forloop.counter <= avg_rating %}<i class="fa-solid fa-star"></i>{% else %}<i class="fa-solid fa-star text-secondary"></i>{% endif %}{% endfor %}
+                </div>
+                <span class="fs-5 fw-bold text-secondary">{{ avg_rating }}/5 ({{ reviews.count }} reviews)</span>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if pg.description %}
+        <div class="glass-card p-4 mt-4 shadow-sm">
+            <h3 class="fw-bold mb-4">Property Description</h3>
+            <p class="text-secondary fs-5" style="line-height: 1.8;">
+                {{ pg.description }}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Booking Sidebar Column -->
+    <div class="col-lg-4 mb-5">
+        <div class="glass-card p-4 sticky-top shadow-lg border-primary border-opacity-10" style="top: 100px;">
+            <div class="mb-4">
+                <h2 class="fw-bold mb-1">{{ pg.name }}</h2>
+                <p class="text-secondary fs-5"><i class="fa-solid fa-location-dot me-2 text-primary"></i>${{ pg.location }}</p>
+                <div class="price-box p-3 rounded-4 mt-3 border border-secondary border-opacity-10 bg-dark bg-opacity-25 d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-secondary small fw-bold text-uppercase">Monthly Charge</span>
+                        <h2 class="fw-bold text-primary mb-0">₹{{ pg.price }}</h2>
+                    </div>
+                </div>
+                {% if avg_rating > 0 %}
+                <div class="mt-3 p-3 rounded-3 bg-warning bg-opacity-10 border border-warning border-opacity-25">
+                    <div class="d-flex align-items-center">
+                        <div class="text-warning me-2">
+                            {% for i in "12345"|make_list %}{% if forloop.counter <= avg_rating %}<i class="fa-solid fa-star"></i>{% else %}<i class="fa-solid fa-star text-secondary"></i>{% endif %}{% endfor %}
+                        </div>
+                        <span class="fw-bold fs-5 text-dark">{{ avg_rating }}/5</span>
+                        <span class="text-secondary ms-2 small">({{ reviews.count }} reviews)</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-5">
+                <h5 class="fw-bold mb-3 border-bottom border-secondary border-opacity-10 pb-2">Top Facilities</h5>
+                <div id="facilitiesContainer" class="d-flex flex-wrap gap-2">
+                    {% if pg.is_wifi %}
+                    <div class="facility-badge px-3 py-2"><i class="fa-solid fa-wifi text-primary"></i> Free WiFi</div>
+                    {% endif %}
+                    {% if pg.is_ac %}
+                    <div class="facility-badge px-3 py-2"><i class="fa-solid fa-snowflake text-info"></i> AC Rooms</div>
+                    {% endif %}
+                    {% if pg.is_food %}
+                    <div class="facility-badge px-3 py-2"><i class="fa-solid fa-utensils text-warning"></i> Meal Included</div>
+                    {% endif %}
+                </div>
+                <!-- Availability Badge -->
+                <div class="mt-3">
+                    <span class="badge {% if pg.is_available %}bg-success{% else %}bg-danger{% endif %} fs-6 px-4 py-3">
+                        <i class="fa-solid fa-bed {% if pg.is_available %}text-white{% else %}text-white{% endif %} me-1"></i>
+                        {% if pg.is_available %}Available{% else %}Full{% endif %}
+                    </span>
+                </div>
+                <!-- Owner Contact - Conditional -->
+                {% if pg.phone or pg.owner_email %}
+                <div class="mt-4 p-3 rounded-3 border border-success border-opacity-25 bg-success bg-opacity-10">
+                    <h6 class="fw-bold text-success mb-2"><i class="fa-solid fa-phone me-2"></i>Direct Contact</h6>
+                    {% if pg.phone %}
+                    <p class="mb-2"><strong>Phone:</strong> <a href="tel:{{ pg.phone }}" class="text-success fw-bold">{{ pg.phone }}</a></p>
+                    {% endif %}
+                    {% if pg.owner_email %}
+                    <p class="mb-0"><strong>Email:</strong> <a href="mailto:{{ pg.owner_email }}" class="text-success fw-bold">{{ pg.owner_email }}</a></p>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="mt-4 p-3 rounded-3 border border-secondary border-opacity-25 bg-dark bg-opacity-10">
+                    <h6 class="fw-bold text-secondary mb-2"><i class="fa-solid fa-user me-2 text-primary"></i>Contact Owner</h6>
+                    <p class="mb-1"><strong>Username:</strong> {{ pg.owner.username }}</p>
+                    <p class="small text-muted mb-0">No direct contact info provided</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="d-grid gap-3">
+                {% if pg.is_available %}
+                <a href="/request/add/{{ pg.id }}/" class="btn btn-primary-custom py-3 fs-5 shadow">
+                    <i class="fa-solid fa-calendar-check me-2"></i> Request Booking
+                </a>
+                {% else %}
+                <button class="btn btn-outline-secondary py-3 fs-5 shadow disabled" disabled>
+                    <i class="fa-solid fa-ban me-2"></i> Currently Full
+                </button>
+                {% endif %}
+                <a href="/pg/wishlist/add/{{ pg.id }}/" class="btn btn-outline-custom rounded-pill py-3 border-opacity-25 border-danger text-danger">
+                    <i class="fa-solid fa-heart me-2"></i> Save to Wishlist
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="col-lg-8">
+        <div class="glass-card p-5 mb-5 shadow-sm position-relative overflow-hidden">
+             <div class="d-flex align-items-center justify-content-between mb-5">
+                <h3 class="fw-bold mb-0">Community Reviews</h3>
+                <span class="badge bg-secondary bg-opacity-10 text-secondary px-4 py-2 border border-secondary border-opacity-10 rounded-pill">Total: {{ reviews.count }}</span>
+            </div>
+
+            <div id="reviewList" class="row g-4 mb-5">
+                {% for review in reviews %}
+                <div class="col-12">
+                     <div class="p-4 rounded-4 border border-secondary border-opacity-10 bg-dark bg-opacity-25 hover-lift">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="avatar-circle me-3 bg-secondary bg-opacity-25 d-flex align-items-center justify-content-center rounded-circle fw-bold" style="width: 45px; height: 45px;">
+                                {{ review.user.username|first|upper }}
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">{{ review.user.username }}</h6>
+                                <div class="text-warning small">
+                                    {% for i in "12345"|make_list %}{% if forloop.counter <= review.rating %}<i class="fa-solid fa-star"></i>{% endif %}{% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-secondary mb-0 fw-light" style="font-size: 0.95rem;">{{ review.comment }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-5">
+                    <i class="fa-solid fa-comment-slash fa-4x mb-3 text-secondary opacity-25"></i>
+                    <p class="text-secondary mb-0">No reviews discovered yet. Be the first to share your experience!</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Review Form -->
+            <div class="p-4 rounded-4 border border-secondary border-opacity-10 bg-secondary bg-opacity-5">
+                <h5 class="fw-bold mb-4">Share Your Experience</h5>
+                <form method="POST" action="/review/add/{{ pg.id }}/">
+                    {% csrf_token %}
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label text-secondary small fw-bold">Star Rating</label>
+                            <select name="rating" class="form-select form-control-custom border-opacity-10 review-input">
+                                <option value="5">5/5 - Perfect</option>
+                                <option value="4">4/5 - Good</option>
+                                <option value="3">3/5 - Average</option>
+                                <option value="2">2/5 - Fair</option>
+                                <option value="1">1/5 - Poor</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label text-secondary small fw-bold">Your Commentary</label>
+                            <textarea name="comment" class="form-control form-control-custom border-opacity-10 review-input review-textarea" rows="3" placeholder="What was your memorable takeaway?"></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary-custom px-5">Submit Review</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-lift { transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .hover-lift:hover { transform: translateY(-5px); border-color: var(--primary-color) !important; }
+
+    .review-input {
+        color: var(--text-primary) !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        border-color: var(--border-color) !important;
+    }
+
+    .review-input::placeholder {
+        color: var(--text-secondary) !important;
+        opacity: 1;
+    }
+
+    .review-input option {
+        color: var(--text-primary) !important;
+        background: var(--dark-bg) !important;
+    }
+
+    .review-textarea {
+        min-height: 130px;
+        resize: vertical;
+    }
+
+    [data-theme="light"] .review-input {
+        background: rgba(255, 255, 255, 0.92) !important;
+        color: #1e293b !important;
+    }
+
+    [data-theme="light"] .review-input option {
+        background: #ffffff !important;
+        color: #1e293b !important;
+    }
+</style>
+{% endblock %}

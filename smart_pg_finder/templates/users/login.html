@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Authentication Portal | Smart PG Finder{% endblock %}
+
+{% block content_full %}
+<div class="row align-items-center justify-content-center min-vh-100 fade-in-up py-4">
+    <div class="col-lg-6 col-md-9 px-4">
+        <div class="auth-card-modern">
+            <div class="text-center mb-5">
+                <i class="fa-solid fa-lock fa-3x text-primary mb-3 opacity-75"></i>
+                <h1 class="fw-bold h3 mb-2">Welcome Back</h1>
+                <p class="text-secondary lead opacity-75 mb-0">Sign in to continue</p>
+            </div>
+
+                <!-- Auth Form -->
+                <form method="POST" id="loginForm">
+                    {% csrf_token %}
+
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} glass-card border-0 mb-4 py-2 px-3 small text-white">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <div class="mb-4">
+                        <label class="form-label text-secondary small fw-bold text-uppercase ms-1">Account Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-secondary border-opacity-10 text-secondary border-end-0 ps-3">
+                                <i class="fa-solid fa-user-astronaut text-primary"></i>
+                            </span>
+                            <input type="text" name="username" class="form-control form-control-custom border-start-0 ps-2" placeholder="e.g. ujwal" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary extra-small fw-bold text-uppercase d-flex justify-content-between ms-1">
+                            Secure Password
+                            <a href="{% url 'forgot_password' %}" class="text-primary text-decoration-none x-small mt-1">Forgot?</a>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-secondary border-opacity-10 text-secondary border-end-0 ps-3">
+                                <i class="fa-solid fa-fingerprint text-primary"></i>
+                            </span>
+                            <input type="password" id="loginPassword" name="password" class="form-control form-control-custom border-start-0 border-end-0 ps-2" placeholder="••••••••" required>
+                            <span class="input-group-text bg-transparent border-secondary border-opacity-10 text-secondary border-start-0 pass-toggle px-3" onclick="togglePassword('loginPassword')">
+                                <i class="fa-regular fa-eye-slash" id="loginPasswordEye"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-custom w-100 py-2 shadow fs-6 mb-3">
+                        Initialize Session <i class="fa-solid fa-shuttle-space ms-2"></i>
+                    </button>
+                </form>
+
+
+
+                <div class="auth-footer">
+                    <p class="text-secondary small mb-0">Don't have account? <a href="/dashboard/register/" class="text-primary fw-bold">Create one →</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 3D Loader Overlay -->
+<div id="auth-loader">
+    <div class="spinner-3d mb-4"></div>
+    <h3 class="fw-bold text-white mb-1">Authenticating...</h3>
+    <p class="text-secondary small">Connecting to your secure Smart PG dashboard</p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function togglePassword(id) {
+        const input = document.getElementById(id);
+        const icon = document.getElementById(id + 'Eye');
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        } else {
+            input.type = "password";
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        }
+    }
+
+    // 3D Loading Trigger
+    document.getElementById('loginForm').addEventListener('submit', function() {
+        const loader = document.getElementById('auth-loader');
+        loader.classList.add('active');
+    });
+</script>
+<style>
+    .shadow-2xl {
+        box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.8);
+    }
+    .x-small { font-size: 0.75rem; }
+    .auth-card { perspective: 1500px; }
+    .tracking-wider { letter-spacing: 0.1em; }
+</style>
+{% endblock %}

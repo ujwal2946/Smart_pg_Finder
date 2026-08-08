@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/register-fixes.css' %}">
+{% endblock %}
+
+{% block title %}Create Account | Smart PG Finder{% endblock %}
+
+{% block content_full %}
+<div class="row align-items-center justify-content-center min-vh-100 fade-in-up py-4">
+    <div class="col-lg-7 col-md-10 px-4">
+        <div class="auth-card-modern">
+            <div class="text-center mb-5">
+                <i class="fa-solid fa-user-plus fa-3x text-primary mb-3 opacity-75"></i>
+                <h1 class="fw-bold h3 mb-2">Create Account</h1>
+                <p class="text-secondary lead opacity-75 mb-0">Join Smart PG Finder ecosystem</p>
+            </div>
+
+                <!-- Register Form -->
+                <form method="POST" id="registerForm">
+                    {% csrf_token %}
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} glass-card border-0 mb-4 py-2 px-3 small text-white">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger glass-card border-0 text-white mb-4">
+                        <ul class="mb-0 small">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-12">
+                            <label class="form-label text-secondary small fw-bold text-uppercase ms-1">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent border-secondary border-opacity-10 text-secondary border-end-0 ps-3">
+                                    <i class="fa-solid fa-user-tag text-primary"></i>
+                                </span>
+                                {{ form.username }}
+                            </div>
+                            {% if form.username.errors %}
+                            <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label text-secondary small fw-bold text-uppercase ms-1">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent border-secondary border-opacity-10 text-secondary border-end-0 ps-3">
+                                    <i class="fa-solid fa-shield-halved text-primary"></i>
+                                </span>
+                                {{ form.password1 }}
+                                <span class="input-group-text bg-transparent border-secondary border-opacity-10 text-secondary border-start-0 pass-toggle px-2" onclick="togglePassword('id_password1')">
+                                    <i class="fa-regular fa-eye-slash" id="toggleEye1"></i>
+                                </span>
+                            </div>
+                            {% if form.password1.errors %}
+                            <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label text-secondary small fw-bold text-uppercase ms-1">Confirm password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent border-secondary border-opacity-10 text-secondary border-end-0 ps-3">
+                                    <i class="fa-solid fa-lock-open text-primary"></i>
+                                </span>
+                                {{ form.password2 }}
+                                <span class="input-group-text bg-transparent border-secondary border-opacity-10 text-secondary border-start-0 pass-toggle px-2" onclick="togglePassword('id_password2')">
+                                    <i class="fa-regular fa-eye-slash" id="toggleEye2"></i>
+                                </span>
+                            </div>
+                            {% if form.password2.errors %}
+                            <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-secondary small fw-bold text-uppercase mb-3 ms-1">Role</label>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                {% if form.role.value == 'user' %}checked{% endif %}
+                                <input type="radio" class="btn-check" name="role" id="userRole" value="user">
+                                <label class="btn btn-outline-custom w-100 py-3" for="userRole">
+                                    <i class="fa-solid fa-user-graduate mb-2 d-block fs-3"></i>
+                                    Student / User
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                {% if form.role.value == 'owner' %}checked{% endif %}
+                                <input type="radio" class="btn-check" name="role" id="ownerRole" value="owner">
+                                <label class="btn btn-outline-custom w-100 py-3" for="ownerRole">
+                                    <i class="fa-solid fa-hotel mb-2 d-block fs-3"></i>
+                                    PG Owner
+                                </label>
+                            </div>
+                        </div>
+
+                    <button type="submit" class="btn btn-primary-custom w-100 py-2 shadow fs-6 mb-4">
+                        Initialize Discovery <i class="fa-solid fa-rocket-launch ms-2"></i>
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <p class="text-secondary small mb-0">Already have account? <a href="/dashboard/login/" class="text-primary fw-bold">Sign in →</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 3D Loader Overlay -->
+<div id="auth-loader">
+    <div class="spinner-3d mb-4"></div>
+    <h3 class="fw-bold text-white mb-1">Processing Global Registry...</h3>
+    <p class="text-secondary small">Synchronizing your identity with our secure node</p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        let iconId;
+        if (inputId === 'id_password1') {
+            iconId = 'toggleEye1';
+        } else if (inputId === 'id_password2') {
+            iconId = 'toggleEye2';
+        }
+        const icon = document.getElementById(iconId);
+        if (!input || !icon) return;
+        
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        } else {
+            input.type = "password";
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        }
+    }
+
+    // 3D Loading Trigger
+    document.getElementById('registerForm').addEventListener('submit', function() {
+        const loader = document.getElementById('auth-loader');
+        loader.classList.add('active');
+    });
+</script>
+<style>
+    .shadow-2xl {
+        box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.8);
+    }
+    .auth-card { perspective: 1500px; }
+    .tracking-wider { letter-spacing: 0.1em; }
+</style>
+{% endblock %}

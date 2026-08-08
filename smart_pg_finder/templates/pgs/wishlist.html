@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Wishlist | Smart PG Finder{% endblock %}
+
+{% block content %}
+<div class="row fade-in">
+    <div class="col-12 mb-4 d-flex align-items-center justify-content-between">
+        <div>
+            <h1 class="fw-bold mb-0">My Favorites</h1>
+            <p class="text-secondary">Properties you've saved for later.</p>
+        </div>
+        <div class="badge bg-danger px-4 py-2 rounded-pill fs-6 shadow">Total: {{ items.count }}</div>
+    </div>
+
+    <div class="row g-4">
+        {% for item in items %}
+        <div class="col-md-4 mb-4">
+            <div class="glass-card overflow-hidden h-100 position-relative">
+                <div style="height: 180px;">
+                    <img src="{{ item.pg.images.first.image.url }}" class="w-100 h-100" style="object-fit: cover;">
+                </div>
+                <div class="p-3">
+                    <h5 class="fw-bold mb-1">{{ item.pg.name }}</h5>
+                    <p class="text-secondary mb-3 small"><i class="fa-solid fa-location-dot me-1 text-danger"></i> {{ item.pg.location }}</p>
+                    <div class="d-flex gap-2">
+                        <a href="/pg/{{ item.pg.id }}/" class="btn btn-primary-custom btn-sm flex-grow-1"><i class="fa-solid fa-eye me-1"></i> View</a>
+                        <a href="/pg/wishlist/remove/{{ item.id }}/" class="btn btn-outline-danger btn-sm rounded-circle"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+             <i class="fa-solid fa-heart-crack fa-4x mb-3 text-secondary op-25"></i>
+             <h3 class="text-secondary">Your wishlist is empty</h3>
+             <a href="/pg/search/" class="btn btn-primary-custom rounded-pill px-4 mt-3">Start Exploring</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

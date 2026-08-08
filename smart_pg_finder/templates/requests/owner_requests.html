@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Requests | Smart PG Finder{% endblock %}
+
+{% block content %}
+<div class="row fade-in-up">
+    <div class="col-12 mb-5 d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div>
+            <h1 class="fw-bold mb-1">Owner Inquiries</h1>
+            <p class="text-secondary mb-0">Review student requests for your PGs and respond with clear actions.</p>
+        </div>
+        <a href="/dashboard/owner/" class="btn btn-primary-custom px-4">Back to Dashboard</a>
+    </div>
+
+    <div class="col-12">
+        <div class="row g-4">
+            {% for req in requests %}
+            <div class="col-lg-6">
+                <div class="glass-card h-100 p-4 inquiry-card">
+                    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                        <div>
+                            <h4 class="fw-bold mb-1">{{ req.user.username }}</h4>
+                            <p class="text-secondary mb-0">
+                                <i class="fa-solid fa-hotel me-2 text-primary"></i>{{ req.pg.name }}
+                            </p>
+                        </div>
+                        {% if req.status == 'pending' %}
+                        <span class="status-pill status-pending">Pending Approval</span>
+                        {% elif req.status == 'approved' %}
+                        <span class="status-pill status-approved">Approved</span>
+                        {% else %}
+                        <span class="status-pill status-rejected">Rejected</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="inquiry-summary mb-4">
+                        {% if req.status == 'pending' %}
+                        <p class="mb-0">This student is waiting for your confirmation. You can approve or reject the inquiry below.</p>
+                        {% elif req.status == 'approved' %}
+                        <p class="mb-0">You have approved this inquiry. This PG has been marked as unavailable for new approvals.</p>
+                        {% else %}
+                        <p class="mb-0">This inquiry has been rejected. No further action is needed unless you want to review the PG details.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 mt-auto">
+                        {% if req.status == 'pending' %}
+                        <a href="/request/approve/{{ req.id }}/" class="btn btn-success px-4">
+                            <i class="fa-solid fa-check me-1"></i>Approve
+                        </a>
+                        <a href="/request/reject/{{ req.id }}/" class="btn btn-outline-danger px-4">
+                            <i class="fa-solid fa-times me-1"></i>Reject
+                        </a>
+                        {% else %}
+                        <span class="finalized-label">Finalized</span>
+                        {% endif %}
+                        <a href="/pg/{{ req.pg.id }}/" class="btn btn-primary-custom ms-auto px-4">View PG</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="glass-card p-5 text-center">
+                    <i class="fa-solid fa-envelope-open-text fa-4x mb-4 text-info opacity-50"></i>
+                    <h3 class="fw-bold mb-2">No Inquiries Yet</h3>
+                    <p class="text-secondary mb-4">There are no student inquiries for your PGs right now.</p>
+                    <a href="/dashboard/owner/" class="btn btn-primary-custom px-4">Go to Owner Dashboard</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+.inquiry-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.inquiry-summary {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+    background: rgba(15, 23, 42, 0.35);
+    color: var(--text-primary);
+    padding: 1rem 1.1rem;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status-pending {
+    background: rgba(245, 158, 11, 0.18);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.status-approved {
+    background: rgba(34, 197, 94, 0.18);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.status-rejected {
+    background: rgba(239, 68, 68, 0.18);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.finalized-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.7rem 1rem;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--text-secondary);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    font-weight: 600;
+}
+</style>
+{% endblock %}

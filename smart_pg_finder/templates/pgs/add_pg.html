@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if pg %}Edit Property{% else %}List New Property{% endif %} | Smart PG Finder{% endblock %}
+
+{% block content %}
+<div class="row fade-in-up py-5">
+    <div class="col-12 text-center mb-5">
+        <h1 class="display-4 fw-bold mb-2">{% if pg %}Refine Your Listing{% else %}Expand Your Portfolio{% endif %}</h1>
+        <p class="text-secondary fs-5">Provide accurate details to attract the right students to your property. Photos are not required.</p>
+    </div>
+
+    <div class="col-lg-8 mx-auto">
+        <div class="glass-card p-5 shadow-2xl border-primary border-opacity-10" data-tilt data-tilt-max="5">
+            <form method="POST" class="row g-4">
+                {% csrf_token %}
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} glass-card mb-3">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                
+                <!-- Core Fields (Required per task) -->
+                <div class="col-12 mb-4">
+                    <h4 class="fw-bold text-primary mb-3"><i class="fa-solid fa-star me-2"></i>Required Fields</h4>
+                </div>
+                
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold mb-2">
+                        <i class="fa-solid fa-hotel text-primary me-1"></i>Property Name
+                    </label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        {% for error in form.name.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold mb-2">
+                        <i class="fa-solid fa-location-dot text-danger me-1"></i>Location
+                    </label>
+                    {{ form.location }}
+                    {% if form.location.errors %}
+                        {% for error in form.location.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+
+                <div class="col-12">
+                    <label class="form-label fw-semibold mb-2">
+                        <i class="fa-solid fa-indian-rupee-sign text-success me-1"></i>Monthly Rent
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">₹</span>
+                        {{ form.price }}
+                        <span class="input-group-text">/month</span>
+                    </div>
+                    {% if form.price.errors %}
+                        {% for error in form.price.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold mb-2">
+                        <i class="fa-solid fa-phone text-primary me-1"></i>Owner Phone Number
+                    </label>
+                    {{ form.phone }}
+                    {% if form.phone.errors %}
+                        {% for error in form.phone.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold mb-2">
+                        <i class="fa-solid fa-envelope text-primary me-1"></i>Owner Email
+                    </label>
+                    {{ form.owner_email }}
+                    {% if form.owner_email.errors %}
+                        {% for error in form.owner_email.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <!-- Optional Enhanced Fields -->
+                <div class="col-12">
+                    <h5 class="text-secondary mt-4 mb-3 border-bottom pb-2">Optional Details</h5>
+                    <label class="form-label fw-semibold mb-2">
+                        <i class="fa-solid fa-align-left text-primary me-1"></i>Description
+                    </label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        {% for error in form.description.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="row mt-4 g-3">
+                        <div class="col-md-4">
+                            <div class="amenity-option">
+                                {{ form.is_wifi }}
+                                <label for="{{ form.is_wifi.id_for_label }}" class="amenity-card">
+                                    <i class="fa-solid fa-wifi amenity-icon"></i>
+                                    <span class="amenity-title">WiFi</span>
+                                    <small class="amenity-text">High-speed internet</small>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="amenity-option">
+                                {{ form.is_ac }}
+                                <label for="{{ form.is_ac.id_for_label }}" class="amenity-card">
+                                    <i class="fa-solid fa-snowflake amenity-icon"></i>
+                                    <span class="amenity-title">AC</span>
+                                    <small class="amenity-text">Air-conditioned rooms</small>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="amenity-option">
+                                {{ form.is_food }}
+                                <label for="{{ form.is_food.id_for_label }}" class="amenity-card">
+                                    <i class="fa-solid fa-utensils amenity-icon"></i>
+                                    <span class="amenity-title">Food</span>
+                                    <small class="amenity-text">Meals included</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label fw-semibold mb-2">
+                        <i class="fa-solid fa-toggle-on text-primary me-1"></i>Availability
+                    </label>
+                    {{ form.availability }}
+                    {% if form.availability.errors %}
+                        {% for error in form.availability.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="col-12 mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fa-solid fa-save me-2"></i>{% if pg %}Update{% else %}Add{% endif %} PG
+                    </button>
+                    <a href="/dashboard/owner/" class="btn btn-secondary w-100 mt-2">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/form-enhancements.js' %}"></script>
+<style>
+.amenity-option input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.amenity-card {
+    min-height: 170px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 1.5rem 1.25rem;
+    border-radius: 1.25rem;
+    border: 2px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.amenity-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(59, 130, 246, 0.65);
+    box-shadow: 0 0.9rem 1.8rem rgba(15, 23, 42, 0.18);
+}
+
+.amenity-icon {
+    width: 64px;
+    height: 64px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.16);
+    color: #60a5fa;
+    font-size: 1.6rem;
+}
+
+.amenity-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #f8fafc;
+}
+
+.amenity-text {
+    color: rgba(226, 232, 240, 0.82);
+    font-size: 0.92rem;
+}
+
+.amenity-option input[type="checkbox"]:checked + .amenity-card {
+    border-color: #38bdf8;
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.22), rgba(59, 130, 246, 0.12));
+    box-shadow: 0 1rem 2rem rgba(14, 165, 233, 0.18);
+    transform: translateY(-4px);
+}
+
+.amenity-option input[type="checkbox"]:checked + .amenity-card .amenity-icon {
+    background: #38bdf8;
+    color: #0f172a;
+}
+
+.amenity-option input[type="checkbox"]:focus + .amenity-card {
+    outline: 3px solid rgba(56, 189, 248, 0.35);
+    outline-offset: 3px;
+}
+</style>
+{% endblock %}

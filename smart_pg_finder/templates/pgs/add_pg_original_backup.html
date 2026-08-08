@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if pg %}Edit Property{% else %}List New Property{% endif %} | Smart PG Finder{% endblock %}
+
+{% block content %}
+<div class="row fade-in-up py-5">
+    <div class="col-12 text-center mb-5">
+        <h1 class="display-4 fw-bold mb-2">{% if pg %}Refine Your Listing{% else %}Expand Your Portfolio{% endif %}</h1>
+        <p class="text-secondary fs-5">Provide accurate details to attract the right students to your property.</p>
+    </div>
+
+    <div class="col-lg-8 mx-auto">
+<div class="glass-card p-5 shadow-2xl border-primary border-opacity-10" data-tilt data-tilt-max="5" data-tilt-glare data-tilt-max-glare="0.1">
+            <form method="POST" enctype="multipart/form-data" class="row g-4">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                <div class="col-12">
+                    <div class="alert alert-danger glass-card border-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Basic Info Section -->
+                <div class="col-12 mb-2">
+                    <h4 class="fw-bold text-primary mb-3"><i class="fa-solid fa-circle-info me-2"></i> Fundamentals</h4>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <div class="field-card glass-card p-4 border-primary border-opacity-20 hover-lift {% if form.name.errors %}border-danger{% endif %}" data-tilt data-tilt-max="10">
+                        <label class="form-label text-secondary fw-semibold mb-2">
+                            <i class="fa-solid fa-hotel text-primary me-1"></i>Property Name
+                        </label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            {% for error in form.name.errors %}
+                            <div class="alert alert-danger alert-sm mt-1 mb-0 p-2">
+                                <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="field-card glass-card p-4 border-success border-opacity-20 hover-lift {% if form.price.errors %}border-danger{% endif %}" data-tilt data-tilt-max="10">
+                        <label class="form-label text-secondary fw-semibold mb-2">
+                            <i class="fa-solid fa-indian-rupee-sign text-success me-1"></i>Monthly Rent (₹)
+                        </label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-transparent border-0 text-success">
+                                <i class="fa-solid fa-coins"></i>
+                            </span>
+                            {{ form.price }}
+                            <span class="input-group-text bg-transparent border-0 text-success">/month</span>
+                        </div>
+                        {% if form.price.errors %}
+                            {% for error in form.price.errors %}
+                            <div class="alert alert-danger alert-sm mt-1 mb-0 p-2">
+                                <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-12 mb-3">
+                    <label class="form-label text-secondary small fw-bold text-uppercase ms-2">Establishment Location</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-secondary border-opacity-10 text-secondary border-end-0 ps-3">
+                            <i class="fa-solid fa-location-dot text-danger"></i>
+                        </span>
+                        {{ form.location }}
+                    </div>
+                    {% if form.location.errors %}
+                        {% for error in form.location.errors %}
+                        <div class="alert alert-danger alert-sm mt-1 mb-0 p-2">
+                            <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="col-12 mb-3">
+                    <label class="form-label text-secondary small fw-bold text-uppercase ms-2">Property Description</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        {% for error in form.description.errors %}
+                        <div class="alert alert-danger alert-sm mt-1 mb-0 p-2">
+                            <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <!-- Contact Section -->
+                <div class="col-12 mt-4 mb-2">
+                    <h4 class="fw-bold text-primary mb-3"><i class="fa-solid fa-address-book me-2"></i> Contact Information</h4>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-secondary small fw-bold text-uppercase ms-2">Contact Phone</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-secondary border-opacity-10 text-secondary border-end-0 ps-3">
+                            <i class="fa-solid fa-phone text-success"></i>
+                        </span>
+                        {{ form.phone }}
+                    </div>
+                    {% if form.phone.errors %}
+                        {% for error in form.phone.errors %}
+                        <div class="alert alert-danger alert-sm mt-1 mb-0 p-2">
+                            <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-secondary small fw-bold text-uppercase ms-2">Owner Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-secondary border-opacity-10 text-secondary border-end-0 ps-3">
+                            <i class="fa-solid fa-envelope text-warning"></i>
+                        </span>
+                        {{ form.owner_email }}
+                    </div>
+                    {% if form.owner_email.errors %}
+                        {% for error in form.owner_email.errors %}
+                        <div class="alert alert-danger alert-sm mt-1 mb-0 p-2">
+                            <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <!-- Amenities Section -->
+                <div class="col-12 mt-4 mb-2">
+                    <h4 class="fw-bold text-primary mb-3"><i class="fa-solid fa-sparkles me-2"></i> Premium Amenities</h4>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="field-card glass-card p-3 hover-lift" data-tilt data-tilt-max="8">
+                        <div class="form-check form-switch d-flex align-items-center">
+                            {{ form.is_wifi }}
+                            <label class="form-check-label fw-semibold ms-3 mb-0 flex-grow-1" for="{{ form.is_wifi.id_for_label }}">
+                                <i class="fa-solid fa-wifi text-info me-2"></i>Free WiFi
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="field-card glass-card p-3 hover-lift" data-tilt data-tilt-max="8">
+                        <div class="form-check form-switch d-flex align-items-center">
+                            {{ form.is_ac }}
+                            <label class="form-check-label fw-semibold ms-3 mb-0 flex-grow-1" for="{{ form.is_ac.id_for_label }}">
+                                <i class="fa-solid fa-snowflake text-cyan me-2"></i>AC Rooms
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="field-card glass-card p-3 hover-lift" data-tilt data-tilt-max="8">
+                        <div class="form-check form-switch d-flex align-items-center">
+                            {{ form.is_food }}
+                            <label class="form-check-label fw-semibold ms-3 mb-0 flex-grow-1" for="{{ form.is_food.id_for_label }}">
+                                <i class="fa-solid fa-utensils text-orange me-2"></i>Food Included
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mt-4">
+                    <label class="form-label fw-bold mb-3 d-block text-primary fs-5">
+                        <i class="fa-solid fa-bed me-2"></i>Availability Status
+                    </label>
+                    <div class="availability-selector glass-card p-4 border-primary border-opacity-20">
+                        {{ form.availability }}
+                    </div>
+                    <small class="text-success mt-2 d-block">
+                        <i class="fa-solid fa-check-circle me-1"></i>Changes sync to listings instantly
+                    </small>
+                    {% if form.availability.errors %}
+                        {% for error in form.availability.errors %}
+                        <div class="alert alert-danger alert-sm mt-1 mb-0 p-2">
+                            <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="col-md-6 mt-4">
+                    <label class="form-label text-secondary small fw-bold text-uppercase ms-2">Property Images</label>
+                    <div class="input-group">
+                        <input type="file" name="images" id="imageUpload" class="form-control form-control-custom" multiple accept="image/*">
+                        <label class="input-group-text bg-primary-custom text-white border-0 px-4">
+                            <i class="fa-solid fa-image me-1"></i>Choose Photos
+                        </label>
+                    </div>
+                    <small class="text-secondary">Upload up to 8 high-quality photos (JPG/PNG)</small>
+                    <div id="imagePreview" class="mt-3 row g-2"></div>
+                </div>
+
+                <div class="col-12 mt-5">
+    <button type="submit" id="submitBtn" class="btn btn-primary-custom w-100 py-3 fs-5 shadow-lg">
+        <span class="btn-text"><i class="fa-solid fa-save me-2"></i>{% if pg %}Update Listing{% else %}Publish Property{% endif %}</span>
+        <span class="btn-loader d-none">
+            <i class="fa-solid fa-spinner fa-spin me-2"></i>Saving...
+        </span>
+    </button>
+                    <a href="{% if pg %}javascript:history.back(){% else %}/dashboard/owner/{% endif %}" class="btn btn-secondary w-100 py-2 mt-2">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.amenity-check { cursor: pointer; transition: 0.2s; }
+.amenity-check:hover { background: rgba(59, 130, 246, 0.05); }
+</style>
+
+{% block extra_js %}
+<script src="{% static 'js/form-enhancements.js' %}"></script>
+{% endblock %}
+{% endblock %}

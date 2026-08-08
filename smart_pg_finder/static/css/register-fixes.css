@@ -1,0 +1,70 @@
+/* Registration Form Visibility & Selection Fixes */
+
+/* Form controls visibility in both themes */
+.form-control, .form-select {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    min-height: 48px;
+}
+
+[data-theme="light"] .form-control, [data-theme="light"] .form-select {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    color: #1e293b !important;
+}
+
+.form-control::placeholder {
+    color: var(--text-secondary) !important;
+    opacity: 1;
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.25rem rgba(0, 210, 255, 0.25) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Role radio button fixes - ensure selection visible */
+.btn-check:checked + .btn.btn-outline-custom,
+.btn-check:active + .btn.btn-outline-custom {
+    border-color: var(--primary-color) !important;
+    background-color: rgba(0, 210, 255, 0.15) !important;
+    color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 210, 255, 0.25) !important;
+}
+
+[data-theme="light"] .btn-check:checked + .btn.btn-outline-custom,
+[data-theme="light"] .btn-check:active + .btn.btn-outline-custom {
+    background-color: rgba(37, 99, 235, 0.15) !important;
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25) !important;
+}
+
+/* Additional Bootstrap radio fixes */
+.btn-check:checked + .btn-outline-custom,
+.btn-check:active + .btn-outline-custom,
+.btn-check:checked:active + .btn-outline-custom {
+    border-color: var(--primary-color) !important;
+    background-color: rgba(0, 210, 255, 0.1) !important;
+}
+
+/* Labels visibility */
+label {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="light"] label {
+    color: #1e293b !important;
+}
+
+/* Error messages */
+.text-danger {
+    color: #ef4444 !important;
+}
+
+/* Auth card specific fixes */
+.holographic-card .form-control-custom {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-primary) !important;
+}

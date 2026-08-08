@@ -1,0 +1,172 @@
+/* Modern Clean Auth UI - Both Login & Register */
+
+/* Clean modern card */
+.auth-card-modern {
+    background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 24px;
+    box-shadow: 
+        0 35px 80px -20px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.3),
+        0 0 0 1px rgba(255,255,255,0.1);
+    padding: 4rem 3rem;
+    max-width: 550px;
+    width: 100%;
+}
+
+/* Light theme adjustments */
+[data-theme="light"] .auth-card-modern {
+    background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+    backdrop-filter: blur(25px);
+    border-color: rgba(0,0,0,0.08);
+    box-shadow: 
+        0 35px 80px -20px rgba(0,0,0,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        0 0 0 1px rgba(0,0,0,0.05);
+}
+
+/* Form styling */
+.auth-form-modern .form-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.auth-form-modern .input-group {
+    margin-bottom: 1.5rem;
+}
+
+.auth-form-modern .input-group-text {
+    background: transparent !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    border-right: none !important;
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .auth-form-modern .input-group-text {
+    border-color: rgba(0,0,0,0.1) !important;
+}
+
+.auth-form-modern .form-control {
+    border-left: none !important;
+    background: transparent !important;
+    border-color: rgba(255,255,255,0.2) !important;
+    color: var(--text-primary) !important;
+    font-weight: 500;
+    padding-left: 1rem;
+    font-size: 1rem;
+}
+
+.auth-form-modern .form-control:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-color), 0.1) !important;
+    background: rgba(255,255,255,0.1) !important;
+}
+
+/* Modern button */
+.btn-modern-auth {
+    background: linear-gradient(135deg, var(--primary-color), #00d2ff88) !important;
+    border: none !important;
+    border-radius: 16px !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    padding: 1rem 2rem !important;
+    box-shadow: 0 12px 30px rgba(var(--primary-color), 0.3) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-modern-auth:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 20px 40px rgba(var(--primary-color), 0.4) !important;
+}
+
+.btn-modern-auth::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn-modern-auth:hover::before {
+    left: 100%;
+}
+
+/* Role selection modern */
+.role-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.role-card {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.role-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-color);
+    background: rgba(255,255,255,0.15);
+}
+
+.role-card.selected {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, rgba(var(--primary-color), 0.2), rgba(var(--primary-color), 0.1));
+    box-shadow: 0 15px 35px rgba(var(--primary-color), 0.3);
+    transform: scale(1.02);
+}
+
+[data-theme="light"] .role-card {
+    background: rgba(0,0,0,0.05);
+    border-color: rgba(0,0,0,0.1);
+}
+
+[data-theme="light"] .role-card:hover {
+    background: rgba(0,0,0,0.08);
+}
+
+/* Footer text */
+.auth-footer {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+}
+
+[data-theme="light"] .auth-footer {
+    border-color: rgba(0,0,0,0.1);
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .auth-card-modern {
+        margin: 1rem;
+        padding: 2rem 1.5rem;
+    }
+    
+    .role-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}

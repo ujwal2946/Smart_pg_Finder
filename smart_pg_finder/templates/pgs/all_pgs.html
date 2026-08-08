@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>All PGs</title>
+</head>
+
+<body>
+
+    <h1>Available PGs</h1>
+
+    {% for pg in pgs %}
+    <div style="border:1px solid black; padding:10px; margin:10px;">
+        <h3>{{ pg.name }}</h3>
+        <p>Location: {{ pg.location }}</p>
+        <p>Price: ₹{{ pg.price }}</p>
+
+        {% if pg.is_wifi %} <p>WiFi Available</p> {% endif %}
+        {% if pg.is_ac %} <p>AC Available</p> {% endif %}
+        {% if pg.is_food %} <p>Food Available</p> {% endif %}
+        <a href="/pg/wishlist/add/{{ pg.id }}/">Save</a>
+    </div>
+    {% for pg in pgs %}
+    <div style="border:1px solid black; padding:10px; margin:10px;">
+        <h3>{{ pg.name }}</h3>
+        <p>Location: {{ pg.location }}</p>
+        <p>Price: ₹{{ pg.price }}</p>
+
+        <a href="/pg/wishlist/add/{{ pg.id }}/">Save</a>
+    </div>
+    {% endfor %}
+    {% empty %}
+    <p>No PGs available</p>
+    {% endfor %}
+
+</body>
+
+</html>

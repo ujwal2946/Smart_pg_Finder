@@ -1,0 +1,635 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search PG | Smart PG Finder{% endblock %}
+
+{% block content %}
+<div class="row fade-in-up search-shell">
+    <div class="col-12 mb-4">
+        <div class="glass-card search-hero p-4 p-lg-5 overflow-hidden">
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-8">
+                    <span class="search-kicker">Student Stay Discovery</span>
+                    <h1 class="display-5 fw-bold mb-3">Find a PG that is clear, verified, and easy to compare</h1>
+                    <p class="text-secondary fs-5 mb-0 search-hero-copy">
+                        Search by area, price, and facilities to quickly shortlist the best options for your account.
+                    </p>
+                </div>
+                <div class="col-lg-4">
+                    <div class="search-hero-stats">
+                        <div class="search-stat-card">
+                            <div class="search-stat-label">Filters</div>
+                            <div class="search-stat-value">Location, price, amenities</div>
+                        </div>
+                        <div class="search-stat-card">
+                            <div class="search-stat-label">View</div>
+                            <div class="search-stat-value">Readable cards with live status</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 mb-5">
+        <div class="glass-card search-panel p-4 p-lg-5 shadow-lg">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+                <div>
+                    <h2 class="h3 fw-bold mb-1">Search Filters</h2>
+                    <p class="text-secondary mb-0">Keep the options simple and compare PGs without visual clutter.</p>
+                </div>
+                <button type="button" id="resetBtn" class="btn btn-outline-custom px-4 py-2 search-reset-btn">
+                    <i class="fa-solid fa-rotate-left me-2"></i> Reset
+                </button>
+            </div>
+
+            <div class="row g-4 align-items-end">
+                <div class="col-lg-5">
+                    <label class="form-label search-label">Location</label>
+                    <div class="search-input-wrap">
+                        <span class="search-input-icon">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </span>
+                        <input type="text" id="locationInput" class="form-control form-control-custom search-input" placeholder="Enter city or area, for example Pune or Bangalore">
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <label class="form-label search-label">Facilities</label>
+                    <div class="search-chip-group">
+                        <div class="form-check p-0 m-0">
+                            <input type="checkbox" class="btn-check" id="wifiCheck" autocomplete="off">
+                            <label class="btn search-chip" for="wifiCheck"><i class="fa-solid fa-wifi me-2"></i>WiFi</label>
+                        </div>
+                        <div class="form-check p-0 m-0">
+                            <input type="checkbox" class="btn-check" id="acCheck" autocomplete="off">
+                            <label class="btn search-chip" for="acCheck"><i class="fa-solid fa-snowflake me-2"></i>AC</label>
+                        </div>
+                        <div class="form-check p-0 m-0">
+                            <input type="checkbox" class="btn-check" id="foodCheck" autocomplete="off">
+                            <label class="btn search-chip" for="foodCheck"><i class="fa-solid fa-utensils me-2"></i>Food</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label search-label">Sort By</label>
+                    <select id="sortSelect" class="form-select form-control-custom search-select">
+                        <option value="">Recommended</option>
+                        <option value="low_price">Price Low to High</option>
+                        <option value="high_price">Price High to Low</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 col-lg-2">
+                    <button id="searchBtn" class="btn btn-primary-custom w-100 py-3 search-action-btn">
+                        <i class="fa-solid fa-magnifying-glass me-2"></i>Search PGs
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <h3 class="fw-bold mb-1">Available PGs</h3>
+                <p class="text-secondary mb-0">Clean cards, easy scan, and visible pricing with status.</p>
+            </div>
+            <div id="resultsMeta" class="results-meta-badge d-none"></div>
+        </div>
+
+        <div id="loadingSpinner" class="text-center py-5 d-none">
+            <div class="spinner-border text-primary mb-3" style="width: 3.5rem; height: 3.5rem; border-width: 0.25rem;" role="status"></div>
+            <p class="text-secondary fs-5 fw-bold">Discovering the best options for you...</p>
+        </div>
+
+        <div id="resultsGrid" class="pg-grid"></div>
+
+        <div id="noResults" class="text-center py-5 d-none">
+            <div class="glass-card p-5 d-inline-block border-opacity-10 shadow">
+                <i class="fa-solid fa-search-minus fa-5x mb-4 text-warning opacity-50"></i>
+                <h3 class="fw-bold mb-2">No Matching Stays Found</h3>
+                <p class="text-secondary mb-0">Try adjusting your location search or facility filters to discover more.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const resultsGrid = document.getElementById('resultsGrid');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const noResults = document.getElementById('noResults');
+    const searchBtn = document.getElementById('searchBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const resultsMeta = document.getElementById('resultsMeta');
+
+    async function fetchPGs(page = 1) {
+        const locationStr = document.getElementById('locationInput').value;
+        const wifi = document.getElementById('wifiCheck').checked;
+        const ac = document.getElementById('acCheck').checked;
+        const food = document.getElementById('foodCheck').checked;
+        const sort = document.getElementById('sortSelect').value;
+
+        resultsGrid.innerHTML = '';
+        document.getElementById('pagination')?.remove();
+        noResults.classList.add('d-none');
+        resultsMeta.classList.add('d-none');
+        loadingSpinner.classList.remove('d-none');
+
+        const params = new URLSearchParams({
+            location: locationStr,
+            is_wifi: wifi,
+            is_ac: ac,
+            is_food: food,
+            sort: sort,
+            page: page
+        });
+
+        try {
+            const response = await fetch(`/pg/api/?${params.toString()}`);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            const responseData = await response.json();
+            const data = responseData.pgs || [];
+
+            loadingSpinner.classList.add('d-none');
+
+            if (data.length === 0) {
+                noResults.classList.remove('d-none');
+                return;
+            }
+
+            resultsMeta.textContent = `${data.length} result${data.length === 1 ? '' : 's'} on page ${responseData.current_page}`;
+            resultsMeta.classList.remove('d-none');
+
+            data.forEach(pg => {
+                const featuredBadge = pg.is_featured ? '<span class="search-top-badge featured">Featured</span>' : '';
+                const availabilityBadge = pg.is_available
+                    ? '<span class="search-top-badge available"><i class="fa-solid fa-check-circle me-1"></i>Available</span>'
+                    : '<span class="search-top-badge full"><i class="fa-solid fa-times-circle me-1"></i>Full</span>';
+
+                const ratingStars = Array.from({ length: 5 }, (_, i) =>
+                    i < Math.round(pg.avg_rating) ? '<i class="fa-solid fa-star text-warning"></i>' : '<i class="fa-regular fa-star text-secondary"></i>'
+                ).join('');
+
+                const cardHtml = `
+                    <article class="search-result-card glass-card shadow-sm h-100 fadeIn-card" data-tilt>
+                        <div class="search-card-top p-4">
+                            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+                                <div class="search-card-tag">Verified PG</div>
+                                <div class="d-flex flex-wrap gap-2 justify-content-end">
+                                    ${featuredBadge}
+                                    ${availabilityBadge}
+                                </div>
+                            </div>
+                            <div class="search-card-price d-inline-flex align-items-end gap-2 px-3 py-2 rounded-3 mb-3">
+                                <span class="search-price-value">Rs. ${parseFloat(pg.price).toLocaleString()}</span>
+                                <span class="search-price-unit">/ month</span>
+                            </div>
+                            <div class="search-card-copy">
+                                Spacious stay setup with practical daily amenities and a student-friendly living environment.
+                            </div>
+                        </div>
+                        <div class="p-4 d-flex flex-column card-3d-content">
+                            <h4 class="fw-bold mb-2 search-card-title">${pg.name}</h4>
+                            <div class="search-location mb-3">
+                                <i class="fa-solid fa-location-dot text-primary me-2"></i>${pg.location}
+                            </div>
+                            <div class="search-rating-row mb-3">
+                                <span class="search-stars">${ratingStars}</span>
+                                <span class="search-rating-value">${pg.avg_rating}</span>
+                            </div>
+                            <div class="search-facility-list mb-4">
+                                ${pg.is_wifi ? '<div class="facility-badge"><i class="fa-solid fa-wifi"></i><span>WiFi</span></div>' : ''}
+                                ${pg.is_ac ? '<div class="facility-badge"><i class="fa-solid fa-snowflake"></i><span>AC</span></div>' : ''}
+                                ${pg.is_food ? '<div class="facility-badge"><i class="fa-solid fa-utensils"></i><span>Food</span></div>' : ''}
+                                ${!pg.is_wifi && !pg.is_ac && !pg.is_food ? '<div class="facility-badge muted"><i class="fa-solid fa-circle-info"></i><span>Basic amenities</span></div>' : ''}
+                            </div>
+                            <div class="search-card-footer mt-auto">
+                                <div class="search-owner-line">Listed by ${pg.owner_username}</div>
+                                <a href="/pg/${pg.id}/" class="btn btn-primary-custom w-100 py-2 mt-3">View Details</a>
+                            </div>
+                        </div>
+                    </article>
+                `;
+
+                resultsGrid.insertAdjacentHTML('beforeend', cardHtml);
+            });
+
+            VanillaTilt.init(document.querySelectorAll('.search-result-card[data-tilt]'));
+
+            // Pagination
+            const paginationData = responseData || {};
+            if (paginationData.has_next || paginationData.has_previous) {
+                let paginationHtml = '<div id="pagination" class="text-center mt-4 pt-4 border-top border-secondary border-opacity-25">';
+                if (paginationData.has_previous) {
+                    paginationHtml += `<button class="btn btn-outline-primary me-2" onclick="fetchPGs(${paginationData.current_page - 1})">Previous</button>`;
+                }
+                paginationHtml += `<span class="mx-3 text-secondary">Page ${paginationData.current_page} of ${paginationData.total_pages}</span>`;
+                if (paginationData.has_next) {
+                    paginationHtml += `<button class="btn btn-outline-primary ms-2" onclick="fetchPGs(${paginationData.current_page + 1})">Next</button>`;
+                }
+                paginationHtml += '</div>';
+                resultsGrid.insertAdjacentHTML('afterend', paginationHtml);
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+            loadingSpinner.classList.add('d-none');
+            resultsMeta.classList.add('d-none');
+            alert('Unable to fetch listings. Please try again.');
+        }
+    }
+
+    function resetFilters() {
+        document.getElementById('locationInput').value = '';
+        document.getElementById('wifiCheck').checked = false;
+        document.getElementById('acCheck').checked = false;
+        document.getElementById('foodCheck').checked = false;
+        document.getElementById('sortSelect').value = '';
+        fetchPGs(1);
+    }
+
+    searchBtn.addEventListener('click', () => fetchPGs(1));
+    resetBtn.addEventListener('click', resetFilters);
+    window.addEventListener('DOMContentLoaded', () => fetchPGs(1));
+</script>
+
+<style>
+    .search-shell {
+        row-gap: 0.5rem;
+    }
+
+    .search-hero {
+        background:
+            radial-gradient(circle at top right, rgba(0, 210, 255, 0.18), transparent 30%),
+            linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.88));
+        border-radius: 28px;
+    }
+
+    [data-theme="light"] .search-hero {
+        background:
+            radial-gradient(circle at top right, rgba(37, 99, 235, 0.14), transparent 30%),
+            linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(241, 245, 249, 0.96));
+    }
+
+    .search-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.45rem 0.85rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--accent-color);
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 1rem;
+    }
+
+    .search-hero-copy {
+        max-width: 48rem;
+    }
+
+    .search-hero-stats {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .search-stat-card {
+        padding: 1rem 1.1rem;
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+    }
+
+    .search-stat-label {
+        color: var(--text-secondary);
+        font-size: 0.76rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.35rem;
+    }
+
+    .search-stat-value {
+        color: var(--text-primary);
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+    .search-panel {
+        border-radius: 28px;
+    }
+
+    .search-label {
+        color: var(--text-primary);
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.85rem;
+    }
+
+    .search-input-wrap {
+        position: relative;
+    }
+
+    .search-input-icon {
+        position: absolute;
+        top: 50%;
+        left: 1.1rem;
+        transform: translateY(-50%);
+        z-index: 2;
+        color: var(--primary-color);
+        font-size: 1rem;
+    }
+
+    .search-input {
+        min-height: 58px;
+        padding-left: 3rem !important;
+        border-radius: 18px !important;
+    }
+
+    .search-number-input,
+    .search-select {
+        min-height: 58px;
+        border-radius: 18px !important;
+    }
+
+    .search-select {
+        color: var(--text-primary) !important;
+        background-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .search-select option {
+        color: var(--text-primary) !important;
+        background: var(--dark-bg) !important;
+    }
+
+    [data-theme="light"] .search-select {
+        background-color: rgba(255, 255, 255, 0.92) !important;
+    }
+
+    [data-theme="light"] .search-select option {
+        background: #ffffff !important;
+        color: #1e293b !important;
+    }
+
+    .search-chip-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .search-chip {
+        border: 1px solid var(--border-color);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-primary);
+        border-radius: 999px;
+        font-weight: 600;
+        padding: 0.85rem 1.1rem;
+        min-width: 102px;
+    }
+
+    .btn-check:checked + .search-chip {
+        background: linear-gradient(135deg, rgba(0, 210, 255, 0.22), rgba(58, 123, 213, 0.32));
+        border-color: rgba(0, 210, 255, 0.65);
+        color: #fff;
+        box-shadow: 0 12px 26px -16px rgba(0, 210, 255, 0.9);
+    }
+
+    [data-theme="light"] .search-chip {
+        background: rgba(255, 255, 255, 0.92);
+    }
+
+    .search-action-btn,
+    .search-reset-btn {
+        min-height: 58px;
+        font-weight: 700;
+    }
+
+    .results-meta-badge {
+        padding: 0.8rem 1.1rem;
+        border-radius: 999px;
+        border: 1px solid var(--border-color);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    .search-result-card {
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+        border-radius: 24px;
+    }
+
+    .search-card-top {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.97), rgba(37, 99, 235, 0.42));
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    [data-theme="light"] .search-card-top {
+        background: linear-gradient(135deg, rgba(226, 232, 240, 0.9), rgba(191, 219, 254, 0.95));
+        border-bottom-color: rgba(0, 0, 0, 0.06);
+    }
+
+    .search-card-tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.45rem 0.75rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #e2e8f0;
+        font-size: 0.76rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    [data-theme="light"] .search-card-tag {
+        color: #1e293b;
+        background: rgba(255, 255, 255, 0.72);
+    }
+
+    .search-top-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.4rem 0.8rem;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+
+    .search-top-badge.featured {
+        background: rgba(59, 130, 246, 0.2);
+        color: #bfdbfe;
+    }
+
+    .search-top-badge.available {
+        background: rgba(34, 197, 94, 0.18);
+        color: #bbf7d0;
+    }
+
+    .search-top-badge.full {
+        background: rgba(239, 68, 68, 0.18);
+        color: #fecaca;
+    }
+
+    [data-theme="light"] .search-top-badge.featured {
+        color: #1d4ed8;
+    }
+
+    [data-theme="light"] .search-top-badge.available {
+        color: #166534;
+    }
+
+    [data-theme="light"] .search-top-badge.full {
+        color: #b91c1c;
+    }
+
+    .search-card-price {
+        background: rgba(15, 23, 42, 0.5);
+    }
+
+    [data-theme="light"] .search-card-price {
+        background: rgba(255, 255, 255, 0.78);
+    }
+
+    .search-price-value {
+        color: var(--text-primary);
+        font-size: 1.35rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .search-price-unit {
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .search-card-copy {
+        min-height: 72px;
+        padding: 1rem;
+        border-radius: 18px;
+        background: rgba(15, 23, 42, 0.34);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: rgba(248, 250, 252, 0.82);
+        line-height: 1.6;
+    }
+
+    [data-theme="light"] .search-card-copy {
+        background: rgba(255, 255, 255, 0.6);
+        border-color: rgba(0, 0, 0, 0.06);
+        color: #334155;
+    }
+
+    .search-card-title {
+        line-height: 1.3;
+    }
+
+    .search-location {
+        color: var(--text-secondary);
+        font-size: 0.97rem;
+        font-weight: 500;
+    }
+
+    .search-rating-row {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .search-stars {
+        display: inline-flex;
+        gap: 0.18rem;
+        font-size: 0.95rem;
+    }
+
+    .search-rating-value {
+        color: var(--text-secondary);
+        font-weight: 700;
+    }
+
+    .search-facility-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+    }
+
+    .facility-badge {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 999px;
+        padding: 0.45rem 0.85rem;
+        font-size: 0.8rem;
+        backdrop-filter: blur(10px);
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    .facility-badge.muted {
+        color: var(--text-secondary);
+    }
+
+    .search-owner-line {
+        color: var(--text-secondary);
+        font-size: 0.88rem;
+        font-weight: 600;
+    }
+
+    #pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    #pagination .btn {
+        border-radius: 999px;
+        padding: 0.7rem 1.2rem;
+    }
+
+    @media (max-width: 991.98px) {
+        .search-hero-stats {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .search-hero,
+        .search-panel {
+            border-radius: 22px;
+        }
+
+        .search-hero h1 {
+            font-size: 2rem;
+        }
+
+        .search-hero-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .search-chip {
+            min-width: auto;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .results-meta-badge {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}

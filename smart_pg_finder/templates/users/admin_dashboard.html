@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Control | Smart PG Finder{% endblock %}
+
+{% block content %}
+<div class="row fade-in-up">
+    <!-- Header Section -->
+    <div class="col-12 mb-5 d-flex flex-wrap align-items-center justify-content-between g-4">
+        <div>
+            <h1 class="display-5 fw-bold mb-1 text-info">System Performance Control, Admin</h1>
+            <p class="text-secondary fs-5 mb-0">Global metrics and monitoring across the Smart PG ecosystem.</p>
+        </div>
+        <div class="badge bg-info bg-opacity-10 text-info px-4 py-2 border border-info border-opacity-10 rounded-pill fs-6 shadow">Global Superuser Context</div>
+    </div>
+
+    <!-- Stats Grid Section -->
+    <div class="row g-4 mb-5 text-center">
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
+            <div class="glass-card stat-card border-info border-opacity-10 shadow-lg hover-lift" data-tilt>
+                <i class="fa-solid fa-users-gear fa-3x mb-4 text-info"></i>
+                <div class="stat-value text-info card-3d-content">{{ stats.total_users }} <small class="text-secondary fs-5">Active</small></div>
+                <div class="text-secondary fw-bold text-uppercase small">Global Registered Users</div>
+            </div>
+        </div>
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+            <div class="glass-card stat-card border-primary border-opacity-10 shadow-lg hover-lift" data-tilt>
+                <i class="fa-solid fa-building-circle-check fa-3x mb-4 text-primary"></i>
+                <div class="stat-value text-primary card-3d-content">{{ stats.total_pgs }} <small class="text-secondary fs-5">Properties</small></div>
+                <div class="text-secondary fw-bold text-uppercase small">Total PG Stays Listed</div>
+            </div>
+        </div>
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+            <div class="glass-card stat-card border-warning border-opacity-10 shadow-lg hover-lift" data-tilt>
+                <i class="fa-solid fa-chart-line fa-3x mb-4 text-warning"></i>
+                <div class="stat-value text-warning card-3d-content">{{ stats.total_requests }} <small class="text-secondary fs-5">Total</small></div>
+                <div class="text-secondary fw-bold text-uppercase small">System Booking Actions</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Management Quicklinks Section -->
+    <div class="col-12 mb-4">
+        <h3 class="fw-bold mb-4 border-bottom border-secondary border-opacity-10 pb-3">Operational Monitoring</h3>
+    </div>
+
+    <div class="row g-4 text-center">
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+            <a href="/admin/users/user/" class="text-decoration-none h-100 block-link">
+                <div class="glass-card p-5 h-100 d-flex flex-column align-items-center bg-hover-blue hover-lift" data-tilt>
+                    <i class="fa-solid fa-id-card fa-4x mb-4 text-primary opacity-50"></i>
+                    <h4 class="fw-bold mb-2">User Registry</h4>
+                    <p class="text-secondary mx-auto mb-0" style="max-width: 200px;">Audit and manage student and owner credentials.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
+            <a href="/admin/pgs/pg/" class="text-decoration-none h-100 block-link">
+                <div class="glass-card p-5 h-100 d-flex flex-column align-items-center bg-hover-cyan hover-lift" data-tilt>
+                    <i class="fa-solid fa-building-user fa-4x mb-4 text-info opacity-50"></i>
+                    <h4 class="fw-bold mb-2">Property Audit</h4>
+                    <p class="text-secondary mx-auto mb-0" style="max-width: 200px;">Verify authenticity and moderate stay listings.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="600">
+            <a href="/admin/requests_app/pgrequest/" class="text-decoration-none h-100 block-link">
+                <div class="glass-card p-5 h-100 d-flex flex-column align-items-center bg-hover-yellow hover-lift" data-tilt>
+                    <i class="fa-solid fa-list-check fa-4x mb-4 text-warning opacity-50"></i>
+                    <h4 class="fw-bold mb-2">Request History</h4>
+                    <p class="text-secondary mx-auto mb-0" style="max-width: 200px;">Track global booking requests and status flow.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-lift { transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .hover-lift:hover { transform: translateY(-8px) scale(1.02); border-color: var(--primary-color); }
+    .bg-hover-blue:hover { background: radial-gradient(circle at center, rgba(0, 210, 255, 0.05), transparent); }
+    .bg-hover-cyan:hover { background: radial-gradient(circle at center, rgba(34, 211, 238, 0.05), transparent); }
+    .bg-hover-yellow:hover { background: radial-gradient(circle at center, rgba(255, 193, 7, 0.05), transparent); }
+</style>
+{% endblock %}

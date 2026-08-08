@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Owner Dashboard | Smart PG Finder{% endblock %}
+
+{% block content %}
+<div class="row fade-in-up">
+    <div class="col-12 mb-5 d-flex flex-wrap align-items-center justify-content-between g-4">
+        <div>
+            <h1 class="display-5 fw-bold mb-2 text-primary">Owner Dashboard</h1>
+            <p class="text-secondary fs-6 mb-0">Manage your PG listings, monitor requests, and keep your property details up to date.</p>
+        </div>
+        <div class="d-flex gap-3 flex-wrap">
+            <div class="glass-card px-4 py-3 d-flex align-items-center gap-3">
+                <div class="bg-primary bg-opacity-75 p-2 rounded-circle">
+                    <i class="fas fa-hotel text-white fs-5"></i>
+                </div>
+                <div>
+                    <h3 class="fw-bold mb-0 lh-1 text-primary">{{ total_pgs }}</h3>
+                    <span class="text-secondary small fw-bold text-uppercase">Total PGs</span>
+                </div>
+            </div>
+            <div class="glass-card px-4 py-3 d-flex align-items-center gap-3">
+                <div class="bg-success bg-opacity-75 p-2 rounded-circle">
+                    <i class="fas fa-check-circle text-white fs-5"></i>
+                </div>
+                <div>
+                    <h3 class="fw-bold mb-0 lh-1 text-success">{{ approved }}</h3>
+                    <span class="text-secondary small fw-bold text-uppercase">Approved Requests</span>
+                </div>
+            </div>
+            <div class="glass-card px-4 py-3 d-flex align-items-center gap-3">
+                <div class="bg-info bg-opacity-75 p-2 rounded-circle">
+                    <i class="fas fa-list text-white fs-5"></i>
+                </div>
+                <div>
+                    <h3 class="fw-bold mb-0 lh-1 text-info">{{ total_requests }}</h3>
+                    <span class="text-secondary small fw-bold text-uppercase">Total Requests</span>
+                </div>
+            </div>
+            <a href="/pg/add/" class="btn btn-primary btn-lg px-4">Add New PG</a>
+        </div>
+    </div>
+
+    <div class="col-12 mb-5">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="glass-card h-100 p-4 text-center">
+                    <i class="fas fa-plus-circle display-5 text-primary mb-3"></i>
+                    <h3 class="fw-bold mb-2">List a New PG</h3>
+                    <p class="text-secondary mb-4">Add a fresh property with pricing, contact details, and amenities.</p>
+                    <a href="/pg/add/" class="btn btn-primary w-100">Add PG</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="glass-card h-100 p-4 text-center">
+                    <i class="fas fa-inbox display-5 text-info mb-3"></i>
+                    <h3 class="fw-bold mb-2">Check Requests</h3>
+                    <p class="text-secondary mb-4">Review student requests for your properties and take action quickly.</p>
+                    <a href="/request/owner/" class="btn btn-outline-primary w-100">View Requests</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0">My PG Listings</h2>
+            <span class="text-secondary">{{ pg_count }} listing{{ pg_count|pluralize }}</span>
+        </div>
+
+        <div class="row g-4">
+            {% for pg in pgs %}
+            <div class="col-lg-4 col-md-6">
+                <div class="glass-card h-100 overflow-hidden d-flex flex-column border-opacity-25 hover-lift">
+                    <div class="position-relative p-4 dashboard-card-top">
+                        <div class="d-flex gap-2 justify-content-end mb-4">
+                            <a href="/pg/edit/{{ pg.id }}/" class="btn btn-primary btn-sm" title="Edit PG">
+                                <i class="fas fa-edit me-1"></i>Edit
+                            </a>
+                            <a href="/pg/delete/{{ pg.id }}/" class="btn btn-danger btn-sm" title="Delete PG" onclick="return confirm('Delete this PG?')">
+                                <i class="fas fa-trash me-1"></i>Delete
+                            </a>
+                        </div>
+                        <div class="about-preview">
+                            <div class="small text-uppercase fw-bold text-info mb-2">About This PG</div>
+                            <p class="mb-0 text-white-50">
+                                {{ pg.description|default:"No description added yet."|truncatechars:120 }}
+                            </p>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-end mt-4">
+                            <div class="bg-dark bg-opacity-50 px-3 py-2 rounded-3">
+                                <span class="text-white fw-bold">Rs. {{ pg.price }}</span>
+                                <small class="text-white-50 d-block">per month</small>
+                            </div>
+                            {% if pg.is_available %}
+                            <span class="badge bg-success px-3 py-2">Available</span>
+                            {% else %}
+                            <span class="badge bg-danger px-3 py-2">Full</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="p-4 flex-grow-1 d-flex flex-column">
+                        <h5 class="fw-bold mb-2">{{ pg.name }}</h5>
+                        <p class="text-secondary small mb-3">
+                            <i class="fas fa-location-dot me-2 text-primary"></i>{{ pg.location }}
+                        </p>
+                        <p class="text-secondary small mb-2">
+                            <i class="fas fa-envelope me-2 text-info"></i>Requests: {{ pg.request_count|default:0 }}
+                        </p>
+                        <div class="mt-auto pt-3 border-top border-secondary border-opacity-25 d-flex justify-content-between align-items-center">
+                            <a href="/pg/{{ pg.id }}/" class="btn btn-outline-light btn-sm">View Details</a>
+                            <span class="text-secondary small">Owner listing</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="glass-card p-5 text-center">
+                    <i class="fas fa-hotel fa-4x mb-4 opacity-50 text-muted"></i>
+                    <h3 class="fw-bold mb-3">No PGs Added Yet</h3>
+                    <p class="text-secondary mb-4">Start by creating your first listing to show students your property.</p>
+                    <a href="/pg/add/" class="btn btn-primary px-4">Add Your First PG</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+.dashboard-card-top {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(37, 99, 235, 0.35));
+}
+
+.about-preview {
+    min-height: 120px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+    padding: 1rem;
+    background: rgba(15, 23, 42, 0.35);
+}
+
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.18);
+}
+</style>
+{% endblock %}
